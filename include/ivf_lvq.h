@@ -490,7 +490,8 @@ public:
         uint64_t d,
         uint64_t c,
         uint32_t b1,
-        uint32_t b2
+        uint32_t b2,
+        const float* fixed_residual_mean = nullptr
     ) {
         configure(n, d, c, b1, b2);
         centroid.assign(centroids, centroids + C * D);
@@ -511,7 +512,11 @@ public:
             offset += len[ci];
         }
 
-        compute_residual_mean(xb, cluster_ids);
+        if (fixed_residual_mean != nullptr) {
+            residual_mean.assign(fixed_residual_mean, fixed_residual_mean + D);
+        } else {
+            compute_residual_mean(xb, cluster_ids);
+        }
 
         id.assign(N, 0);
         cluster_of_pos.assign(N, 0);
